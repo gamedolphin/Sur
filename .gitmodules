@@ -1,3 +1,6 @@
 [submodule "libs/libsoundio"]
 	path = libs/libsoundio
 	url = https://github.com/andrewrk/libsoundio
+[submodule "libs/ffmpeg"]
+	path = libs/ffmpeg
+	url = git://source.ffmpeg.org/ffmpeg.git
