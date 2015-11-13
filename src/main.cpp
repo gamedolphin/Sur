@@ -9,5 +9,7 @@ int main(int argc, char **argv) {
 
   std::cout<<Sur::Initialize(&app)<<"HELLO"<<std::endl;
 
+  Sur::UpdateAndRender(&app);
+
   Sur::End(&app);
 }

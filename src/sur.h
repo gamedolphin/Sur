@@ -22,6 +22,8 @@ namespace Sur {
     Audio audio;
   };
 
+  void UpdateAndRender(App *app);
+
   bool Initialize(App* app);
   SoundIoError InitializeAudio(Audio *audio);
 
