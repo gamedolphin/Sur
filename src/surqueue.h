@@ -11,16 +11,22 @@ extern "C" {
 
 namespace Sur {
   struct Queue {
-    std::queue<AVPacket*> packetList;
+    std::deque<AVPacket*> packetList;
     std::mutex lockQueue;
   };
 
+  enum queue_modify {
+    INSERT, REMOVE, DELETEALL
+  };
+
+  void changeQueue_thread(Queue* q, AVPacket* packet, queue_modify m);
 
   void insert_into_surQueue (Sur::Queue* q, AVPacket* packet);
-  void retrieve_from_surQueue(Sur::Queue* q);
+  void retrieve_from_surQueue(Sur::Queue* q, AVPacket* packet);
 
-  void insertToQueue_thread(Sur::Queue* q, AVPacket* packet);
-  void retrieveFromQueue_thread(Sur::Queue* q);
+  bool isQueueEmpty (Sur::Queue* q);
+
+  void EndQueue(Sur::Queue *q);
 }
 
 #endif

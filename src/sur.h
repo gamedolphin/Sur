@@ -1,19 +1,10 @@
 #ifndef _SUR_H_
 #define _SUR_H_
 
-#include "sursound.h"
+#include "surapp.h"
 
 
 namespace Sur {
-
-  struct WindowInfo {
-  };
-
-  struct App {
-    bool isRunning;
-    WindowInfo window;
-    Audio audio;
-  };
 
   void UpdateAndRender(App *app);
 

@@ -1,13 +1,9 @@
-#include <soundio/soundio.h>
-
 #include "sur.h"
-#include "sursound.h"
-#include "surcodecs.h"
+#include <iostream>
 
 void Sur::UpdateAndRender(App *app) {
-  for (;;) {
-    Sur::sound_events(app->audio.soundIo);
-  }
+  //  while(true)
+    int j = Sur::ReadFrame(&app->file, &app->audioQueue);
 }
 
 bool Sur::Initialize(App *app) {
@@ -18,11 +14,22 @@ bool Sur::Initialize(App *app) {
   app->isRunning = true;
 
   Sur::InitializeAudio(&app->audio);
+  // very important to set the user data as app
+  // no other way to access this rest of app in callback
+  app->audio.outStream->userdata = (Sur::App*)app;
+
   Sur::InitializeCodecs();
 
+  int k = Sur::OpenFile(&app->file, "../sample.mp3");
+  int j = Sur::GetContext(&app->file);
+  int l = Sur::GetCodec(&app->file);
+
+  Sur::EndQueue(&app->audioQueue);
   return true;
 }
 
 void Sur::End(App *app) {
   Sur::EndAudio(&app->audio);
+  Sur::EndCodecs(&app->file);
+  Sur::EndQueue(&app->audioQueue);
 }

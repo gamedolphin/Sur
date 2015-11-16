@@ -2,20 +2,41 @@
 #include <math.h>
 
 #include "sursound.h"
+#include "surapp.h"
+#include "surqueue.h"
+
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+}
+
+#include <iostream>
 
 static const float PI = 3.14159f;
 static float seconds_offset = 0.0f;
 
-static void Sur::write_callback(SoundIoOutStream *outstream,
-                                int frame_count_min, int frame_count_max) {
+void Sur::write_callback(SoundIoOutStream *outstream,
+                         int frame_count_min, int frame_count_max) {
+
+  Sur::App *app = static_cast<Sur::App*>(outstream->userdata);
+  if(!app) {
+    return;
+  }
+
+  AVPacket *p = NULL;
+  Sur::retrieve_from_surQueue(&app->audioQueue, p);
+  av_free_packet(p);
+
+  std::cout<<app->audioQueue.packetList.size()<<std::endl;
+
+  const SoundIoChannelLayout *layout = &outstream->layout;
+  SoundIoChannelArea *areas;
+  int err;
 
   //Sur::retrieve_from_surQueue(&packetQueue);
-  const struct SoundIoChannelLayout *layout = &outstream->layout;
   float float_sample_rate = outstream->sample_rate;
   float seconds_per_frame = 1.0f / float_sample_rate;
-  struct SoundIoChannelArea *areas;
   int frames_left = frame_count_max;
-  int err;
 
   while (frames_left > 0) {
     int frame_count = frames_left;
@@ -90,6 +111,7 @@ SoundIoError Sur::InitializeAudio(Audio *audio) {
   if ((err = soundio_outstream_start(outstream))) {
     return SoundIoErrorNoMem;
   }
+
   return SoundIoErrorNone;
 }
 
