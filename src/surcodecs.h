@@ -1,13 +1,12 @@
 #ifndef _SUR_CODECS_H
 #define _SUR_CODECS_H
 
-#include <string>
-
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 }
 
+#include <string>
 #include "surqueue.h"
 
 

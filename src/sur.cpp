@@ -1,9 +1,8 @@
 #include "sur.h"
-#include <iostream>
 
 void Sur::UpdateAndRender(App *app) {
   //  while(true)
-    int j = Sur::ReadFrame(&app->file, &app->audioQueue);
+  int j = Sur::ReadFrame(&app->file, &app->audioQueue);
 }
 
 bool Sur::Initialize(App *app) {

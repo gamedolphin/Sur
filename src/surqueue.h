@@ -19,12 +19,10 @@ namespace Sur {
     INSERT, REMOVE, DELETEALL
   };
 
-  void changeQueue_thread(Queue* q, AVPacket* packet, queue_modify m);
+  void thread_ChangeQueue(Queue* q, AVPacket* packet, queue_modify m);
 
-  void insert_into_surQueue (Sur::Queue* q, AVPacket* packet);
-  void retrieve_from_surQueue(Sur::Queue* q, AVPacket* packet);
-
-  bool isQueueEmpty (Sur::Queue* q);
+  void InsertIntoSurQueue (Sur::Queue* q, AVPacket* packet);
+  void RetrieveFromSurQueue(Sur::Queue* q, AVPacket* packet);
 
   void EndQueue(Sur::Queue *q);
 }

@@ -1,8 +1,8 @@
 #include <soundio/soundio.h>
 #include <math.h>
 
+#include "sur.h"
 #include "sursound.h"
-#include "surapp.h"
 #include "surqueue.h"
 
 extern "C" {
@@ -24,7 +24,7 @@ void Sur::write_callback(SoundIoOutStream *outstream,
   }
 
   AVPacket *p = NULL;
-  Sur::retrieve_from_surQueue(&app->audioQueue, p);
+  Sur::RetrieveFromSurQueue(&app->audioQueue, p);
   av_free_packet(p);
 
   std::cout<<app->audioQueue.packetList.size()<<std::endl;

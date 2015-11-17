@@ -1,5 +1,4 @@
 #include "surcodecs.h"
-#include <iostream>
 
 bool Sur::codecsInitialized = false;
 
@@ -24,7 +23,6 @@ void Sur::EndCodecs(Sur::File *file) {
 
 int Sur::OpenFile(Sur::File *file, std::string fn) {
   if(avformat_open_input(&file->formatContext, fn.c_str(), NULL, NULL) != 0) {
-    std::cout<<"ERROR IN OPENING";
     return -1;
   }
   file->filename = fn;
@@ -36,34 +34,28 @@ int Sur::GetContext(Sur::File *file) {
   int audioStream = -1;
   AVFormatContext *pContext = file->formatContext;
   if(pContext == NULL) {
-    std::cout<<"context not found";
     return -1;
   }
   for (unsigned int i = 0; i < pContext->nb_streams; i++) {
     if(pContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO &&
        audioStream < 0) {
       audioStream = i;
-      std::cout<<audioStream<<std::endl;
     }
   }
-  std::cout<<audioStream<<std::endl;
   if(audioStream >= 0) {
     file->codecContext = file->formatContext->streams[audioStream]->codec;
     file->audioStream = audioStream;
     return audioStream;
   }
   else {
-    std::cout<<"audio stream not found";
     return -1;
   }
 }
 
 
 int Sur::GetCodec(Sur::File *file) {
-  std::cout<<file->codecContext<<std::endl;
   AVCodecContext *codecCtx = file->codecContext;
   if(codecCtx == NULL) {
-    std::cout<<"NO CODEC CONTEXT FOUND";
     return -1;
   }
 
@@ -71,7 +63,6 @@ int Sur::GetCodec(Sur::File *file) {
   AVCodec *aCodec;
   aCodec = avcodec_find_decoder(codecCtx->codec_id);
   if(!aCodec) {
-    std::cout<<"NO DECODER FOUND";
     return -1;
   }
   codecCtx = avcodec_alloc_context3(aCodec);
@@ -95,7 +86,7 @@ int Sur::ReadFrame(Sur::File *file, Sur::Queue *q) {
 
   if(av_read_frame(file->formatContext, &packet) >= 0 )  {
     if(packet.stream_index == file->audioStream) {
-      Sur::insert_into_surQueue(q, &packet);
+      Sur::InsertIntoSurQueue(q, &packet);
     }
     else {
       av_free_packet(&packet);

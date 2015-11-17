@@ -1,9 +1,8 @@
 #include "surqueue.h"
-#include <iostream>
 
 int num = 0;
 
-void Sur::changeQueue_thread(Sur::Queue *q, AVPacket *packet, Sur::queue_modify state) {
+void Sur::thread_ChangeQueue(Sur::Queue *q, AVPacket *packet, Sur::queue_modify state) {
   std::lock_guard<std::mutex> guard(q->lockQueue);
   switch(state) {
   case Sur::INSERT:
@@ -21,6 +20,8 @@ void Sur::changeQueue_thread(Sur::Queue *q, AVPacket *packet, Sur::queue_modify 
       break;
     }
     for (auto s: q->packetList) {
+      if(!s)
+        continue;
       av_free_packet(s);
     }
     q->packetList.clear();
@@ -29,22 +30,18 @@ void Sur::changeQueue_thread(Sur::Queue *q, AVPacket *packet, Sur::queue_modify 
   }
 }
 
-void Sur::insert_into_surQueue(Sur::Queue* q, AVPacket* p) {
-  std::thread t(Sur::changeQueue_thread, q, p, Sur::INSERT);
+void Sur::InsertIntoSurQueue(Sur::Queue* q, AVPacket* p) {
+  std::thread t(Sur::thread_ChangeQueue, q, p, Sur::INSERT);
   t.join();
 }
 
-void Sur::retrieve_from_surQueue(Sur::Queue *q, AVPacket *p) {
-  std::thread t(Sur::changeQueue_thread, q, p, Sur::REMOVE);
+void Sur::RetrieveFromSurQueue(Sur::Queue *q, AVPacket *p) {
+  std::thread t(Sur::thread_ChangeQueue, q, p, Sur::REMOVE);
   t.join();
-}
-
-bool Sur::isQueueEmpty(Sur::Queue *q) {
-  return q->packetList.empty();
 }
 
 void Sur::EndQueue(Sur::Queue *q) {
   AVPacket *p;
-  std::thread t(Sur::changeQueue_thread, q, p, Sur::DELETEALL);
+  std::thread t(Sur::thread_ChangeQueue, q, p, Sur::DELETEALL);
   t.join();
 }
